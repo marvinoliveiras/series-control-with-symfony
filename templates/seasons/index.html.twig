@@ -1,0 +1,18 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{series.name}} seasons{% endblock %}
+
+{% block body %}
+<main class="container card">
+    <ul class="list-group list-group-flush">
+        {% for season in seasons %}
+            <li class="list-group-item d-flex justify-content-between">
+                Season {{ season.number }}
+                <span class="badge bg-secondary">
+                    {{ season.getEpisodes.count }}
+                </span>
+            </li>
+        {% endfor %}
+    </ul>
+</main>
+{% endblock %}

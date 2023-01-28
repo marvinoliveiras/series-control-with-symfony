@@ -1,0 +1,45 @@
+<?php
+
+namespace App\Form;
+
+use App\DTO\SeriesCreateFormInput;
+use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\NumberType;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
+use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\OptionsResolver\OptionsResolver;
+
+class SeriesType extends AbstractType
+{
+    public function buildForm(FormBuilderInterface $builder, array $options): void
+    {
+        $builder
+            ->add('seriesName')
+            ->add('seasonsQuantity',
+                type: NumberType::class,
+                options: ['label' => 
+                    'Quantity of Seasons'
+            ])->add('episodesPerSeason',
+                type: NumberType::class,
+                options: ['label' => 
+                    'Episodes per season'
+            ])->add('save',
+                SubmitType::class,
+                ['label' => $options['is_edit']
+                    ? 'Edit'
+                    : 'Save'
+                ]
+        )->setMethod($options['is_edit']
+            ? 'PATCH'
+            : 'POST'
+        );
+    }
+
+    public function configureOptions(OptionsResolver $resolver): void
+    {
+        $resolver->setDefaults([
+            'data_class' => SeriesCreateFormInput::class,
+            'is_edit' => false
+        ]);
+    }
+}

@@ -1,0 +1,51 @@
+{% extends "base.html.twig" %}
+{% block title %}
+    {{ series is defined ? 'Edit a Series' : 'Insert a new Series' }}
+{% endblock %}
+{% block body %}
+    {{ form_start(seriesForm) }}
+        <div class="my-custom-class-for-errors">
+            {{ form_errors(seriesForm) }}
+        </div>
+        <div class="row">
+            <div class="col">
+                {{ form_row(seriesForm.seriesName) }}
+            </div>
+        </div>
+        <div class="row">
+            <div class="col">
+                {{ form_row(seriesForm.seasonsQuantity) }}
+            </div>
+        </div>
+        <div class="row">
+            <div class="col">
+                {{ form_row(seriesForm.episodesPerSeason) }}
+            </div>
+        </div>
+        <div class="row">
+            <div class="col">
+                {{ form_widget(seriesForm.save, {'attr': {class: 'btn-dark'}}) }}
+            </div>
+        </div>
+    {{ form_end(seriesForm) }}
+    
+    
+    {#
+    <!--
+    {{ form(seriesForm)}}
+    <form method="POST" action="{{ series is defined
+        ? path('app_store_series_changes', {series: series.id})
+        : path('app_add_series') }}">
+        <div class="mb3">
+            <label for="name" class="form-label">Series name:</label>
+            <input type="text" name="name" id="name" class="form-control" value="{{ series.name is defined ? series.name : '' }}">
+        </div>
+        {% if series is defined %}
+            <input type="hidden" name="_method" value="PATCH">
+        {% endif %}
+            <button type="submit"  class="btn btn-dark m-3">
+                {{ series is defined ? 'Edit' : 'Save' }}
+            </button>
+    </form>-->
+    #}
+{% endblock %}
