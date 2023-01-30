@@ -9,7 +9,7 @@
             <li class="list-group-item d-flex justify-content-between">
                 Season {{ season.number }}
                 <span class="badge bg-secondary">
-                    {{ season.getEpisodes.count }}
+                    {{ season.getEpisodes|length }}
                 </span>
             </li>
         {% endfor %}

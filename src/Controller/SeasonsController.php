@@ -6,8 +6,9 @@ use App\Entity\Series;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Contracts\Cache\CacheInterface;
-use Symfony\Contracts\Cache\ItemInterface;
+use Symfony\Contracts\Cache\{
+    CacheInterface,ItemInterface
+};
 
 class SeasonsController extends AbstractController
 {
@@ -24,13 +25,12 @@ class SeasonsController extends AbstractController
             "series_{$series->getId()}_seasons",
             function(ItemInterface $item) use ($series){
                 $item->expiresAfter(new \DateInterval('PT10S'));
-
                 /** @var PersistentCollection $seasons */
                 $seasons = $series->getSeasons();
                 $seasons->initialize();
                 return $seasons;
             }
-        );dd($seasons);
+        );
         return $this->render('seasons/index.html.twig', [
             'seasons' => $seasons,
             'series' => $series
