@@ -2,7 +2,11 @@
 
 {% block title %}Series List{% endblock %}
 {% block body %}
-    <a href="{{ path('app_series_create_form') }}" class="btn btn-dark mb-3">Insert</a>
+    {% if is_granted('ROLE_USER') %}
+        <a href="{{ path('app_series_create_form') }}" class="btn btn-dark mb-3">
+            Insert
+        </a>
+    {% endif %}
     <ul class="list-group">
         {% for series in seriesList %}
                 <li class="list-group-item d-flex justify-content-between align-items-center">

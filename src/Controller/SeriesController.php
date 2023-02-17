@@ -3,9 +3,9 @@
 namespace App\Controller;
 
 use App\DTO\SeriesCreateFormInput;
-use App\Entity\Episode;
-use App\Entity\Season;
-use App\Entity\Series;
+use App\Entity\{
+    Episode,Season,Series
+};
 use App\Form\SeriesType;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\{

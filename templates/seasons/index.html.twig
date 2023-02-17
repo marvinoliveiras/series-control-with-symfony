@@ -7,9 +7,11 @@
     <ul class="list-group list-group-flush">
         {% for season in seasons %}
             <li class="list-group-item d-flex justify-content-between">
-                Season {{ season.number }}
+                <a href="{{ path('app_episodes', {season: season.id}) }}">
+                    Season {{ season.number }}
+                </a>
                 <span class="badge bg-secondary">
-                    {{ season.getEpisodes|length }}
+                    {{ season.watchedEpisodes|length }}/{{ season.getEpisodes|length }}
                 </span>
             </li>
         {% endfor %}

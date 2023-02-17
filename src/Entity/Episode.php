@@ -6,6 +6,7 @@ use App\Repository\EpisodeRepository;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: EpisodeRepository::class)]
+#[ORM\Cache]
 class Episode
 {
     #[ORM\Id]
@@ -17,6 +18,9 @@ class Episode
     #[ORM\ManyToOne(inversedBy: 'episodes')]
     #[ORM\JoinColumn(nullable: false)]
     private ?Season $season = null;
+
+    #[ORM\Column]
+    private ?bool $watched = null;
 
     public function __construct(
         #[ORM\Column]
@@ -51,6 +55,18 @@ class Episode
     public function setSeason(?Season $season): self
     {
         $this->season = $season;
+
+        return $this;
+    }
+
+    public function isWatched(): ?bool
+    {
+        return $this->watched;
+    }
+
+    public function setWatched(bool $watched): self
+    {
+        $this->watched = $watched;
 
         return $this;
     }
