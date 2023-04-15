@@ -3,8 +3,12 @@
 {% block title %}{{series.name}} seasons{% endblock %}
 
 {% block body %}
-<main class="container card">
-    <ul class="list-group list-group-flush">
+<main class="container">
+    <div class="text-center">
+        <img src="{{asset('uploads/cover_image/') ~ series.coverImagePath }}"
+            alt="{{series.name}} series Poster" class="img-fluid mb-5">
+    </div>
+    <ul class="list-group list-group-flush card"/>
         {% for season in seasons %}
             <li class="list-group-item d-flex justify-content-between">
                 <a href="{{ path('app_episodes', {season: season.id}) }}">

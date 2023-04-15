@@ -2,9 +2,12 @@
 
 namespace App\Repository;
 
+use App\DTO\SeriesCreationInputDTO;
 use App\Entity\Series;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
+use Exception;
+use Psr\Log\LoggerInterface;
 
 /**
  * @extends ServiceEntityRepository<Series>
@@ -16,18 +19,32 @@ use Doctrine\Persistence\ManagerRegistry;
  */
 class SeriesRepository extends ServiceEntityRepository
 {
-    public function __construct(ManagerRegistry $registry)
+    public function __construct(
+        ManagerRegistry $registry,
+        private LoggerInterface $logger,
+        private SeasonRepository $seasonRepository,
+        private EpisodeRepository $episodeRepository)
     {
         parent::__construct($registry, Series::class);
     }
 
-    public function save(Series $entity, bool $flush = false): void
+    public function save(SeriesCreationInputDTO $DTO, bool $flush = false): Series
     {
-        $this->getEntityManager()->persist($entity);
-
+        $series = new Series($DTO->seriesName, $DTO->coverImage);
+        $this->getEntityManager()->persist($series);
         if ($flush) {
             $this->getEntityManager()->flush();
         }
+        try{
+            $this->seasonRepository->addSeasonsQuantity($DTO->seasonsQuantity, $series->getId());
+            $seasons = $this->seasonRepository->findBy(['series' => $series]);
+            $this->episodeRepository->addEpisodesPerSeason($DTO->episodesPerSeason, $seasons);
+        }catch(\Exception $e){
+            $this->logger->error($e->getMessage());
+            $this->remove($series, true);
+            dd($e);
+        }
+        return $series;
     }
 
     public function remove(Series $entity, bool $flush = false): void

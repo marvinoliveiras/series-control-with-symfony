@@ -21,6 +21,22 @@ class EpisodeRepository extends ServiceEntityRepository
         parent::__construct($registry, Episode::class);
     }
 
+    public function addEpisodesPerSeason(int $episodesPerSeason, array $seasons): void
+    {
+        $params = array_fill(0, $episodesPerSeason, '(?, ?)');
+        $connection = $this->getEntityManager()->getConnection();
+        $sql = 'INSERT INTO episode (season_id, number) VALUES ' . implode(', ', $params);
+        $stm = $connection->prepare($sql);
+
+        foreach ($seasons as $season) {
+            for ($i = 0; $i < $episodesPerSeason; $i++) {
+                $stm->bindValue($i * 2 + 1, $season->getId(), \PDO::PARAM_INT);
+                $stm->bindValue($i * 2 + 2, $i + 1, \PDO::PARAM_INT);
+            }
+            $stm->executeQuery();
+        }
+    }
+
     public function save(Episode $entity, bool $flush = false): void
     {
         $this->getEntityManager()->persist($entity);
