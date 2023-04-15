@@ -120,7 +120,7 @@ class SeriesController extends AbstractController
     #[Route('/series/edit/{series}', name: 'app_edit_series_form', methods: ['GET'])]
     public function editSeriesForm(Series $series): Response
     {
-        $seriesDTO = new SeriesCreateFormInput($series->getName(), $series->getSeasons(), $series->getSeasons()->getEpisodes());
+        //$seriesDTO = new SeriesCreateFormInput($series->getName(), $series->getSeasons(), $series->getSeasons()->getEpisodes());
         $seriesForm = $this->createForm(SeriesType::class, $series, ['is_edit' => true]);
         return $this->renderForm(
             'series/form.html.twig',
