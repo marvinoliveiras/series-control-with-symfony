@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Season;
 use Doctrine\ORM\EntityManagerInterface;
+use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -13,7 +14,8 @@ use Symfony\Component\Routing\Annotation\Route;
 class EpisodesController extends AbstractController
 {
     public function __construct(
-        private EntityManagerInterface $entityManager
+        private EntityManagerInterface $entityManager,
+        private LoggerInterface $logger
     )
     {
         
@@ -43,6 +45,9 @@ class EpisodesController extends AbstractController
                 ->all(
                     'episodes'
                 ));
+        if(count($watchedEpisodes) > 2){
+            $this->logger->info('More than two episodes marked as watched');
+        }
         $episodes = $season->getEpisodes();
         foreach($episodes as $episode){
             $episode->setWatched(

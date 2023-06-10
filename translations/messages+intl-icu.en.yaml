@@ -1,0 +1,5 @@
+add: add new series
+series.list: Series List
+series.delete: Series {name} deleted successfully
+series.added.msg: Series {name} create successfully
+button.insert: insert

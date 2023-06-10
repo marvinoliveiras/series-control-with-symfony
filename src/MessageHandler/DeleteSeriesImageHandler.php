@@ -3,13 +3,15 @@ namespace App\MessageHandler;
 
 use App\Message\SeriesWasDeleted;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
+use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Messenger\Attribute\AsMessageHandler;
 
 #[AsMessageHandler]
 class DeleteSeriesImageHandler
 {
     public function __construct(
-        private ParameterBagInterface $parameterBag
+        private ParameterBagInterface $parameterBag,
+        private Filesystem $fileSystem
     )
     {
         
@@ -19,11 +21,12 @@ class DeleteSeriesImageHandler
         $coverImagePath = $message
             ->series
             ->getCoverImagePath();
-        unlink($this
+        $this->fileSystem->remove(
+            $this
             ->parameterBag
             ->get(
                 'cover_image_directory')
-                .DIRECTORY_SEPARATOR.$coverImagePath
+            .DIRECTORY_SEPARATOR.$coverImagePath
         );
     }
 }

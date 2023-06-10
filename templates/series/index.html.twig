@@ -1,10 +1,10 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Series List{% endblock %}
+{% block title %}{% trans %}series.list{% endtrans %}{% endblock %}
 {% block body %}
     {% if is_granted('ROLE_USER') %}
         <a href="{{ path('app_series_create_form') }}" class="btn btn-dark mb-3">
-            Insert
+            {% trans %}button.insert{% endtrans %}
         </a>
     {% endif %}
     <ul class="list-group">

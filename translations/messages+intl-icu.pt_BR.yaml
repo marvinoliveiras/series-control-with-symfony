@@ -1,0 +1,5 @@
+add: Adicionar nova Série
+series.list: Lista de séries
+series.delete: Série {name} removida com sucesso
+series.added.msg: Série {name} adicionada com sucesso
+button.insert: inserir 

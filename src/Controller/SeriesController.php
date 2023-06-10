@@ -3,12 +3,10 @@
 namespace App\Controller;
 
 use App\DTO\SeriesCreationInputDTO;
-use App\Entity\{
-    Episode,Season,Series
-};
+use App\Entity\Series;
 use App\Form\SeriesType;
-use App\Message\SeriesWasCreated;
-use App\Message\SeriesWasDeleted;
+use App\Message\{SeriesWasCreated,
+    SeriesWasDeleted};
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\{
     RedirectResponse, Response, Request
@@ -18,6 +16,7 @@ use App\Repository\SeriesRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Messenger\MessageBusInterface;
 use Symfony\Component\String\Slugger\SluggerInterface;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 class SeriesController extends AbstractController
 {
@@ -25,7 +24,8 @@ class SeriesController extends AbstractController
         private SeriesRepository $seriesRepository,
         private EntityManagerInterface $entityManager,
         private MessageBusInterface $messenger,
-        private SluggerInterface $slugger
+        private SluggerInterface $slugger,
+        private TranslatorInterface $translator
     )
     {
     }
@@ -96,9 +96,10 @@ class SeriesController extends AbstractController
         $this->messenger->dispatch(new SeriesWasCreated($series));
         $this->addFlash(
             'success',
-            "Series \"{$series->getName()}\" created successfully!"
-        );
-        return new RedirectResponse('/series');
+            $this->translator->trans('series.added.msg',[
+                'name' => $series->getName()
+            ]));
+        return $this->redirectToRoute('app_series');
     }
     #[Route(
         '/series/delete/{series}',
@@ -113,15 +114,20 @@ class SeriesController extends AbstractController
         $this->messenger->dispatch(new SeriesWasDeleted($series));
         $this->addFlash(
             'success',
-            'Series removed successfully!'
-        );
-        return new RedirectResponse('/series');
+            $this->translator
+                ->trans('series.delete',
+                    ['name' => $series->getName()
+            ]));
+        return $this->redirectToRoute('app_series');
     }
     #[Route('/series/edit/{series}', name: 'app_edit_series_form', methods: ['GET'])]
     public function editSeriesForm(Series $series): Response
     {
-        //$seriesDTO = new SeriesCreateFormInput($series->getName(), $series->getSeasons(), $series->getSeasons()->getEpisodes());
-        $seriesForm = $this->createForm(SeriesType::class, $series, ['is_edit' => true]);
+        $seasons = $series->getSeasons();
+        $numberOfSeasons = count($seasons);
+        $numberOfEpisodes = count($seasons[0]->getEpisodes());
+        $seriesDTO = new SeriesCreationInputDTO($series->getName(), $numberOfSeasons, $numberOfEpisodes);
+        $seriesForm = $this->createForm(SeriesType::class, $seriesDTO, ['is_edit' => true]);
         return $this->renderForm(
             'series/form.html.twig',
             compact('seriesForm')
